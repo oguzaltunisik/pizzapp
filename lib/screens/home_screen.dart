@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 import '../data/mock_data.dart';
-import '../widgets/product_bottom_sheet.dart';
+import '../widgets/item_bottom_sheet.dart';
 import 'profile_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -38,31 +38,31 @@ class HomeScreen extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            _buildProductList('Pizzalar'),
-            _buildProductList('Kebaplar'),
-            _buildProductList('İçecekler'),
-            _buildProductList('Tatlılar'),
+            _buildItemList('Pizzalar'),
+            _buildItemList('Kebaplar'),
+            _buildItemList('İçecekler'),
+            _buildItemList('Tatlılar'),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildProductList(String category) {
+  Widget _buildItemList(String category) {
     return Consumer<CartProvider>(
       builder: (context, cart, child) {
-        final products = MockData.products
-            .where((product) => product.category == category)
+        final items = MockData.items
+            .where((item) => item.category == category)
             .toList();
         return ListView.builder(
-          itemCount: products.length,
+          itemCount: items.length,
           itemBuilder: (ctx, i) => Card(
             margin: const EdgeInsets.all(8),
             child: ListTile(
-              title: Text(products[i].name),
-              subtitle: Text(products[i].description),
+              title: Text(items[i].name),
+              subtitle: Text(items[i].description),
               trailing: Text(
-                '${products[i].price.toStringAsFixed(2)} ₺',
+                '${items[i].price.toStringAsFixed(2)} ₺',
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -71,7 +71,7 @@ class HomeScreen extends StatelessWidget {
               onTap: () {
                 showModalBottomSheet(
                   context: context,
-                  builder: (ctx) => ProductBottomSheet(product: products[i]),
+                  builder: (ctx) => ItemBottomSheet(item: items[i]),
                 );
               },
             ),

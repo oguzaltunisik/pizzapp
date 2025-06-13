@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/product.dart';
+import '../models/item.dart';
 import '../providers/cart_provider.dart';
 
-class ProductBottomSheet extends StatefulWidget {
-  final Product product;
+class ItemBottomSheet extends StatefulWidget {
+  final Item item;
 
-  const ProductBottomSheet({super.key, required this.product});
+  const ItemBottomSheet({super.key, required this.item});
 
   @override
-  State<ProductBottomSheet> createState() => _ProductBottomSheetState();
+  State<ItemBottomSheet> createState() => _ItemBottomSheetState();
 }
 
-class _ProductBottomSheetState extends State<ProductBottomSheet> {
+class _ItemBottomSheetState extends State<ItemBottomSheet> {
   int _quantity = 1;
 
   @override
@@ -23,12 +23,12 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            widget.product.name,
+            widget.item.name,
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 8),
           Text(
-            widget.product.description,
+            widget.item.description,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 16),
@@ -53,7 +53,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '${(widget.product.price * _quantity).toStringAsFixed(2)} ₺',
+                '${(widget.item.price * _quantity).toStringAsFixed(2)} ₺',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               ElevatedButton(
@@ -63,7 +63,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                     listen: false,
                   );
                   for (var i = 0; i < _quantity; i++) {
-                    cart.addItem(widget.product);
+                    cart.addItem(widget.item);
                   }
                   Navigator.of(context).pop();
                   ScaffoldMessenger.of(context).showSnackBar(

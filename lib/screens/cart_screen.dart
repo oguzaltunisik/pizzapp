@@ -25,9 +25,9 @@ class CartScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: ListTile(
-                    title: Text(item.product.name),
+                    title: Text(item.item.name),
                     subtitle: Text(
-                      '${item.product.price.toStringAsFixed(2)} ₺',
+                      '${item.item.price.toStringAsFixed(2)} ₺',
                     ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -36,7 +36,7 @@ class CartScreen extends StatelessWidget {
                           icon: const Icon(Icons.remove),
                           onPressed: () {
                             cart.updateQuantity(
-                              item.product.id,
+                              item.item.id,
                               item.quantity - 1,
                             );
                           },
@@ -46,7 +46,7 @@ class CartScreen extends StatelessWidget {
                           icon: const Icon(Icons.add),
                           onPressed: () {
                             cart.updateQuantity(
-                              item.product.id,
+                              item.item.id,
                               item.quantity + 1,
                             );
                           },

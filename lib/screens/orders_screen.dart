@@ -148,9 +148,9 @@ class OrdersScreen extends StatelessWidget {
                     ...order.items.map((item) {
                       return ListTile(
                         leading: CircleAvatar(child: Text('${item.quantity}x')),
-                        title: Text(item.product.name),
+                        title: Text(item.item.name),
                         trailing: Text(
-                          '${(item.product.price * item.quantity).toStringAsFixed(2)} ₺',
+                          '${(item.item.price * item.quantity).toStringAsFixed(2)} ₺',
                         ),
                       );
                     }).toList(),
