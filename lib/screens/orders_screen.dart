@@ -153,7 +153,7 @@ class OrdersScreen extends StatelessWidget {
                           '${(item.item.price * item.quantity).toStringAsFixed(2)} ₺',
                         ),
                       );
-                    }).toList(),
+                    }),
                   ],
                 ),
               );

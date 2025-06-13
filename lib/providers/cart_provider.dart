@@ -14,31 +14,17 @@ class CartProvider with ChangeNotifier {
   double get totalAmount {
     var total = 0.0;
     _items.forEach((key, cartItem) {
-      total += cartItem.item.price * cartItem.quantity;
+      total += cartItem.item.totalPrice * cartItem.quantity;
     });
     return total;
   }
 
   void addItem(Item item) {
-    if (_items.containsKey(item.id)) {
-      _items.update(
-        item.id,
-        (existingCartItem) => CartItem(
-          id: existingCartItem.id,
-          item: item,
-          quantity: existingCartItem.quantity + 1,
-        ),
-      );
-    } else {
-      _items.putIfAbsent(
-        item.id,
-        () => CartItem(
-          id: DateTime.now().toString(),
-          item: item,
-          quantity: 1,
-        ),
-      );
-    }
+    final cartItemId = DateTime.now().toString();
+    _items.putIfAbsent(
+      cartItemId,
+      () => CartItem(id: cartItemId, item: item.copy(), quantity: 1),
+    );
     notifyListeners();
   }
 

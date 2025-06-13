@@ -60,7 +60,11 @@ class HomeScreen extends StatelessWidget {
             margin: const EdgeInsets.all(8),
             child: ListTile(
               title: Text(items[i].name),
-              subtitle: Text(items[i].description),
+              subtitle: Text(
+                items[i].category == 'Pizzalar' && items[i].toppings != null
+                    ? items[i].toppings!.map((t) => t.label).join(', ')
+                    : items[i].description,
+              ),
               trailing: Text(
                 '${items[i].price.toStringAsFixed(2)} ₺',
                 style: const TextStyle(
@@ -71,7 +75,7 @@ class HomeScreen extends StatelessWidget {
               onTap: () {
                 showModalBottomSheet(
                   context: context,
-                  builder: (ctx) => ItemBottomSheet(item: items[i]),
+                  builder: (ctx) => ItemBottomSheet(item: items[i].copy()),
                 );
               },
             ),

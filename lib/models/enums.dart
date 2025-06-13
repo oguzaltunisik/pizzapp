@@ -25,3 +25,24 @@ enum OrderStatus {
   final String label;
   const OrderStatus(this.label);
 }
+
+enum Toppings {
+  mozzarella('Mozzarella Peyniri'),
+  cheddar('Cheddar Peyniri'),
+  pepperoni('Pepperoni'),
+  sausage('Sosis'),
+  mushroom('Mantar'),
+  greenPepper('Yeşil Biber'),
+  onion('Soğan'),
+  corn('Mısır'),
+  blackOlive('Siyah Zeytin'),
+  pineapple('Ananas'),
+  tomato('Domates'),
+  beef('Sığır Eti'),
+  chicken('Tavuk'),
+  pastrami('Pastırma'),
+  sujuk('Sucuk');
+
+  final String label;
+  const Toppings(this.label);
+}

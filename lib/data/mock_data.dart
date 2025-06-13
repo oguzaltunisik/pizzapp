@@ -1,4 +1,5 @@
 import '../models/item.dart';
+import '../models/enums.dart';
 
 class MockData {
   static final List<Item> items = [
@@ -9,6 +10,7 @@ class MockData {
       description: 'Domates sos, mozarella peyniri, fesleğen',
       price: 89.90,
       category: 'Pizzalar',
+      toppings: [Toppings.mozzarella, Toppings.tomato, Toppings.mushroom],
     ),
     Item(
       id: 'p2',
@@ -16,6 +18,12 @@ class MockData {
       description: 'Domates sos, mozarella peyniri, sosis, mantar, biber',
       price: 109.90,
       category: 'Pizzalar',
+      toppings: [
+        Toppings.mozzarella,
+        Toppings.sausage,
+        Toppings.mushroom,
+        Toppings.greenPepper,
+      ],
     ),
     Item(
       id: 'p3',
@@ -23,6 +31,7 @@ class MockData {
       description: 'Domates sos, mozarella peyniri, tavuk, mısır',
       price: 99.90,
       category: 'Pizzalar',
+      toppings: [Toppings.mozzarella, Toppings.chicken, Toppings.corn],
     ),
     Item(
       id: 'p4',
@@ -30,6 +39,12 @@ class MockData {
       description: 'Domates sos, mozarella peyniri, mantar, biber, zeytin',
       price: 94.90,
       category: 'Pizzalar',
+      toppings: [
+        Toppings.mozzarella,
+        Toppings.mushroom,
+        Toppings.greenPepper,
+        Toppings.blackOlive,
+      ],
     ),
 
     // Kebaplar
