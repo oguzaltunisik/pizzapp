@@ -11,7 +11,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('PizzApp'),
@@ -32,6 +32,7 @@ class HomeScreen extends StatelessWidget {
               Tab(text: '🍕 Pizzalar'),
               Tab(text: '🥙 Kebaplar'),
               Tab(text: '🥤 İçecekler'),
+              Tab(text: '🍰 Tatlılar'),
             ],
           ),
         ),
@@ -40,6 +41,7 @@ class HomeScreen extends StatelessWidget {
             _buildProductList('Pizzalar'),
             _buildProductList('Kebaplar'),
             _buildProductList('İçecekler'),
+            _buildProductList('Tatlılar'),
           ],
         ),
       ),

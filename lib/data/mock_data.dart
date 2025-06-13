@@ -91,6 +91,36 @@ class MockData {
       price: 14.90,
       category: 'İçecekler',
     ),
+
+    // Tatlılar
+    Product(
+      id: 't1',
+      name: 'Künefe',
+      description: 'Antep fıstıklı, kaymaklı',
+      price: 69.90,
+      category: 'Tatlılar',
+    ),
+    Product(
+      id: 't2',
+      name: 'Baklava',
+      description: 'Antep fıstıklı, 6 dilim',
+      price: 59.90,
+      category: 'Tatlılar',
+    ),
+    Product(
+      id: 't3',
+      name: 'Sütlaç',
+      description: 'Fırında sütlaç',
+      price: 39.90,
+      category: 'Tatlılar',
+    ),
+    Product(
+      id: 't4',
+      name: 'Kazandibi',
+      description: 'Ev yapımı kazandibi',
+      price: 39.90,
+      category: 'Tatlılar',
+    ),
   ];
 
   static List<Map<String, String>> getCategories() {
@@ -98,6 +128,7 @@ class MockData {
       {'name': 'Pizzalar', 'emoji': '🍕'},
       {'name': 'Kebaplar', 'emoji': '🍖'},
       {'name': 'İçecekler', 'emoji': '🥤'},
+      {'name': 'Tatlılar', 'emoji': '🍰'},
     ];
   }
 }
