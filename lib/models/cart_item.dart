@@ -1,4 +1,5 @@
 import 'item.dart';
+import 'enums.dart';
 
 class CartItem {
   final String id;
@@ -17,13 +18,19 @@ class CartItem {
         'name': item.name,
         'description': item.description,
         'price': item.price,
-        'category': item.category,
+        'category': item.category.name,
       },
       'quantity': quantity,
     };
   }
 
   factory CartItem.fromJson(Map<String, dynamic> json) {
+    final categoryName = json['item']['category'] as String;
+    final category = Category.values.firstWhere(
+      (e) => e.name == categoryName,
+      orElse: () => Category.pizzas, // Varsayılan kategori
+    );
+
     return CartItem(
       id: json['id'] as String,
       item: Item(
@@ -31,7 +38,7 @@ class CartItem {
         name: json['item']['name'] as String,
         description: json['item']['description'] as String,
         price: json['item']['price'] as double,
-        category: json['item']['category'] as String,
+        category: category,
       ),
       quantity: json['quantity'] as int,
     );

@@ -4,6 +4,7 @@ import '../providers/cart_provider.dart';
 import '../data/mock_data.dart';
 import '../widgets/item_bottom_sheet.dart';
 import 'profile_screen.dart';
+import '../models/enums.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -38,17 +39,17 @@ class HomeScreen extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            _buildItemList('Pizzalar'),
-            _buildItemList('Kebaplar'),
-            _buildItemList('İçecekler'),
-            _buildItemList('Tatlılar'),
+            _buildItemList(Category.pizzas),
+            _buildItemList(Category.kebabs),
+            _buildItemList(Category.drinks),
+            _buildItemList(Category.desserts),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildItemList(String category) {
+  Widget _buildItemList(Category category) {
     return Consumer<CartProvider>(
       builder: (context, cart, child) {
         final items = MockData.items
@@ -61,7 +62,8 @@ class HomeScreen extends StatelessWidget {
             child: ListTile(
               title: Text(items[i].name),
               subtitle: Text(
-                items[i].category == 'Pizzalar' && items[i].toppings != null
+                items[i].category == Category.pizzas &&
+                        items[i].toppings != null
                     ? items[i].toppings!.map((t) => t.label).join(', ')
                     : items[i].description,
               ),

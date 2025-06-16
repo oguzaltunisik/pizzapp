@@ -7,7 +7,7 @@ class Item {
   final String name;
   final String description;
   final double price;
-  final String category;
+  final Category category;
   final List<Toppings>? toppings;
   List<Toppings>? removedToppings;
   List<Toppings>? extraToppings;
@@ -19,10 +19,7 @@ class Item {
     required this.price,
     required this.category,
     this.toppings,
-  }) {
-    removedToppings = [];
-    extraToppings = [];
-  }
+  });
 
   double get totalPrice =>
       price + (extraToppings?.length ?? 0) * extraToppingPrice;
