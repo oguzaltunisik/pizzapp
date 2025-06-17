@@ -48,13 +48,11 @@ enum Toppings {
 }
 
 enum Category {
-  pizzas('Pizzalar', '🍕'),
-  kebabs('Kebaplar', '🍖'),
-  drinks('İçecekler', '🥤'),
-  desserts('Tatlılar', '🍰');
+  pizza('Pizzalar'),
+  kebab('Kebaplar'),
+  drink('İçecekler'),
+  dessert('Tatlılar');
 
-  final String name;
-  final String emoji;
-
-  const Category(this.name, this.emoji);
+  final String label;
+  const Category(this.label);
 }

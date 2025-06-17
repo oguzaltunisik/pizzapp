@@ -1,11 +1,10 @@
 import 'package:flutter/foundation.dart';
-import '../models/cart_item.dart';
 import '../models/item.dart';
 
 class CartProvider with ChangeNotifier {
-  final Map<String, CartItem> _items = {};
+  final Map<String, Item> _items = {};
 
-  Map<String, CartItem> get items => {..._items};
+  Map<String, Item> get items => {..._items};
 
   int get itemCount {
     return _items.values.fold(0, (sum, item) => sum + item.quantity);
@@ -13,42 +12,39 @@ class CartProvider with ChangeNotifier {
 
   double get totalAmount {
     var total = 0.0;
-    _items.forEach((key, cartItem) {
-      total += cartItem.item.totalPrice * cartItem.quantity;
+    _items.forEach((key, item) {
+      total += item.totalPrice * item.quantity;
     });
     return total;
   }
 
   void addItem(Item item) {
-    final cartItemId = DateTime.now().toString();
+    final cartId = DateTime.now().toString();
     _items.putIfAbsent(
-      cartItemId,
-      () => CartItem(id: cartItemId, item: item.copy(), quantity: 1),
+      cartId,
+      () => item.copyWith(cartId: cartId, quantity: item.quantity),
     );
     notifyListeners();
   }
 
-  void updateQuantity(String itemId, int quantity) {
-    if (!_items.containsKey(itemId)) {
+  void updateItem(String cartId, Item updatedItem, int quantity) {
+    if (!_items.containsKey(cartId)) {
       return;
     }
     if (quantity <= 0) {
-      _items.remove(itemId);
+      _items.remove(cartId);
     } else {
       _items.update(
-        itemId,
-        (existingCartItem) => CartItem(
-          id: existingCartItem.id,
-          item: existingCartItem.item,
-          quantity: quantity,
-        ),
+        cartId,
+        (existingItem) =>
+            updatedItem.copyWith(quantity: quantity, cartId: cartId),
       );
     }
     notifyListeners();
   }
 
-  void removeItem(String itemId) {
-    _items.remove(itemId);
+  void removeItem(String cartId) {
+    _items.remove(cartId);
     notifyListeners();
   }
 

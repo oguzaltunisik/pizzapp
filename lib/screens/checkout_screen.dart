@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 import '../providers/orders_provider.dart';
-import '../widgets/action_button.dart';
 import '../models/enums.dart';
+import '../models/customer.dart';
+import '../widgets/bottom_action_button.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -34,14 +35,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final cart = Provider.of<CartProvider>(context, listen: false);
     final orders = Provider.of<OrdersProvider>(context, listen: false);
 
+    final customer = Customer(
+      name: _nameController.text,
+      phone: _phoneController.text,
+      address: _deliveryMethod == DeliveryMethod.delivery
+          ? _addressController.text
+          : null,
+    );
+
     orders.addOrder(
       cart.items.values.toList(),
       cart.totalAmount,
-      customerName: _nameController.text,
-      customerPhone: _phoneController.text,
-      customerAddress: _deliveryMethod == DeliveryMethod.delivery
-          ? _addressController.text
-          : null,
+      customer: customer,
       deliveryMethod: _deliveryMethod,
       paymentMethod: _paymentMethod,
     );
@@ -194,11 +199,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       bottomNavigationBar: Consumer<CartProvider>(
         builder: (context, cart, child) {
           if (cart.items.isEmpty) return const SizedBox();
-          return ActionButton(
-            text: 'Siparişi Ver   ${cart.totalAmount.toStringAsFixed(2)} ₺',
+          return BottomActionButton(
+            label: 'Siparişi Ver: ${cart.totalAmount.toStringAsFixed(2)} ₺',
             icon: Icons.check,
             onPressed: _submitOrder,
-            isBottomBar: true,
           );
         },
       ),

@@ -130,12 +130,12 @@ class OrdersScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Müşteri: ${order.customerName}'),
+                          Text('Müşteri: ${order.customer.name}'),
                           const SizedBox(height: 4),
-                          Text('Telefon: ${order.customerPhone}'),
-                          if (order.customerAddress != null) ...[
+                          Text('Telefon: ${order.customer.phone}'),
+                          if (order.customer.address != null) ...[
                             const SizedBox(height: 4),
-                            Text('Adres: ${order.customerAddress}'),
+                            Text('Adres: ${order.customer.address}'),
                           ],
                           const SizedBox(height: 8),
                           Text('Teslimat: ${order.deliveryMethod.label}'),
@@ -148,9 +148,9 @@ class OrdersScreen extends StatelessWidget {
                     ...order.items.map((item) {
                       return ListTile(
                         leading: CircleAvatar(child: Text('${item.quantity}x')),
-                        title: Text(item.item.name),
+                        title: Text(item.name),
                         trailing: Text(
-                          '${(item.item.price * item.quantity).toStringAsFixed(2)} ₺',
+                          '${(item.price * item.quantity).toStringAsFixed(2)} ₺',
                         ),
                       );
                     }),

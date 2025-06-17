@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 import '../models/order.dart';
-import '../models/cart_item.dart';
+import '../models/item.dart';
 import '../models/enums.dart';
+import '../models/customer.dart';
 
 class OrdersProvider with ChangeNotifier {
   final List<Order> _orders = [];
@@ -9,11 +10,9 @@ class OrdersProvider with ChangeNotifier {
   List<Order> get orders => [..._orders];
 
   void addOrder(
-    List<CartItem> items,
+    List<Item> items,
     double totalAmount, {
-    required String customerName,
-    required String customerPhone,
-    String? customerAddress,
+    required Customer customer,
     required DeliveryMethod deliveryMethod,
     required PaymentMethod paymentMethod,
   }) {
@@ -24,9 +23,7 @@ class OrdersProvider with ChangeNotifier {
         items: items,
         totalAmount: totalAmount,
         dateTime: DateTime.now(),
-        customerName: customerName,
-        customerPhone: customerPhone,
-        customerAddress: customerAddress,
+        customer: customer,
         deliveryMethod: deliveryMethod,
         paymentMethod: paymentMethod,
       ),
@@ -42,9 +39,7 @@ class OrdersProvider with ChangeNotifier {
         items: _orders[orderIndex].items,
         totalAmount: _orders[orderIndex].totalAmount,
         dateTime: _orders[orderIndex].dateTime,
-        customerName: _orders[orderIndex].customerName,
-        customerPhone: _orders[orderIndex].customerPhone,
-        customerAddress: _orders[orderIndex].customerAddress,
+        customer: _orders[orderIndex].customer,
         deliveryMethod: _orders[orderIndex].deliveryMethod,
         paymentMethod: _orders[orderIndex].paymentMethod,
         status: OrderStatus.cancelled,
