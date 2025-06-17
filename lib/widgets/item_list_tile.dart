@@ -175,6 +175,10 @@ class ItemListTile extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
+                  if (showQuantity) ...[
+                    QuantityBadge(quantity: item.quantity),
+                    const SizedBox(height: 4),
+                  ],
                   Text(
                     showQuantity
                         ? '${item.totalPrice.toStringAsFixed(2)} ₺'
@@ -185,10 +189,6 @@ class ItemListTile extends StatelessWidget {
                       color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
-                  if (showQuantity) ...[
-                    const SizedBox(height: 4),
-                    QuantityBadge(quantity: item.quantity),
-                  ],
                 ],
               ),
             ],
