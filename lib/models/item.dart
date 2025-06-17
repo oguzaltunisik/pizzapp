@@ -6,7 +6,7 @@ class Item {
   final String id;
   final String name;
   final String image;
-  final String description;
+  final String? description;
   final double price;
   final Category category;
   final List<Toppings>? toppings;
@@ -21,7 +21,7 @@ class Item {
     required this.id,
     required this.name,
     required this.image,
-    required this.description,
+    this.description,
     required this.price,
     required this.category,
     this.toppings,
@@ -62,7 +62,7 @@ class Item {
       'id': id,
       'name': name,
       'image': image,
-      'description': description,
+      'description': description ?? '',
       'price': price,
       'category': category.name,
       'toppings': toppings?.map((t) => t.name).toList(),
@@ -78,7 +78,7 @@ class Item {
         id: json['id'] as String,
         name: json['name'] as String,
         image: json['image'] as String,
-        description: json['description'] as String,
+        description: json['description'] as String?,
         price: (json['price'] as num).toDouble(),
         category: Category.values.firstWhere((c) => c.name == json['category']),
         toppings: (json['toppings'] as List?)

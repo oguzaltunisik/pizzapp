@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../models/item.dart';
 import '../models/enums.dart';
 import '../providers/cart_provider.dart';
+import '../widgets/bottom_action_button.dart';
+import 'quantity_badge.dart';
 
 class ItemBottomSheet extends StatefulWidget {
   final Item item;
@@ -72,14 +74,55 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
     return false;
   }
 
+  void _toggleExtraTopping(Toppings t, bool? checked) {
+    setState(() {
+      if (checked == true) {
+        widget.item.extraToppings?.add(t);
+      } else {
+        widget.item.extraToppings?.remove(t);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).colorScheme.primary;
     return Container(
       padding: const EdgeInsets.all(16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(widget.item.name, style: Theme.of(context).textTheme.titleLarge),
+          Container(
+            width: 72,
+            height: 72,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Text(
+              widget.item.image,
+              style: const TextStyle(fontSize: 44),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            widget.item.name,
+            style:
+                Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                ) ??
+                const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+            textAlign: TextAlign.center,
+          ),
           const SizedBox(height: 8),
           if (widget.item.toppings != null && widget.item.toppings!.isNotEmpty)
             Column(
@@ -94,6 +137,7 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                   children: widget.item.toppings!
                       .map(
                         (t) => ChoiceChip(
+                          showCheckmark: false,
                           label: Text(
                             t.label,
                             style: TextStyle(
@@ -116,6 +160,16 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                               }
                             });
                           },
+                          backgroundColor:
+                              (widget.item.removedToppings?.contains(t) ??
+                                  false)
+                              ? Colors.red.shade50
+                              : null,
+                          selectedColor:
+                              (widget.item.removedToppings?.contains(t) ??
+                                  false)
+                              ? Colors.red.shade100
+                              : null,
                         ),
                       )
                       .toList(),
@@ -126,43 +180,39 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
-                Wrap(
-                  spacing: 8,
+                ListView(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
                   children: Toppings.values
                       .where(
                         (t) => !(widget.item.toppings?.contains(t) ?? false),
                       )
                       .map(
-                        (t) => ChoiceChip(
-                          label: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(t.label),
-                              const SizedBox(width: 4),
-                              Text(
-                                '+${Item.extraToppingPrice.toStringAsFixed(2)}€',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color:
-                                      (widget.item.extraToppings?.contains(t) ??
-                                          false)
-                                      ? Theme.of(context).colorScheme.primary
-                                      : null,
-                                ),
-                              ),
-                            ],
+                        (t) => ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: Checkbox(
+                            value:
+                                widget.item.extraToppings?.contains(t) == true,
+                            onChanged: (checked) =>
+                                _toggleExtraTopping(t, checked),
                           ),
-                          selected:
-                              widget.item.extraToppings?.contains(t) ?? false,
-                          onSelected: (selected) {
-                            setState(() {
-                              if (selected) {
-                                widget.item.extraToppings?.add(t);
-                              } else {
-                                widget.item.extraToppings?.remove(t);
-                              }
-                            });
-                          },
+                          title: Text(t.label),
+                          trailing: Text(
+                            '+${Item.extraToppingPrice.toStringAsFixed(2)}€',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color:
+                                  widget.item.extraToppings?.contains(t) == true
+                                  ? primaryColor
+                                  : Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface.withOpacity(0.5),
+                            ),
+                          ),
+                          onTap: () => _toggleExtraTopping(
+                            t,
+                            !(widget.item.extraToppings?.contains(t) ?? false),
+                          ),
                         ),
                       )
                       .toList(),
@@ -171,12 +221,13 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
             )
           else
             Text(
-              widget.item.description,
+              widget.item.description ?? '',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           const SizedBox(height: 16),
           Row(
             children: [
+              Spacer(),
               Card(
                 child: Row(
                   spacing: 8,
@@ -228,10 +279,7 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                           ? () => setState(() => _quantity--)
                           : null,
                     ),
-                    Text(
-                      '$_quantity',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
+                    QuantityBadge(quantity: _quantity),
                     IconButton(
                       icon: const Icon(Icons.add_circle_outline),
                       onPressed: () => setState(() => _quantity++),
@@ -239,36 +287,38 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                   ],
                 ),
               ),
-              const Spacer(),
-              ElevatedButton(
-                onPressed: widget.cartItemId != null && !_hasChanged
-                    ? null
-                    : () {
-                        final cart = Provider.of<CartProvider>(
-                          context,
-                          listen: false,
-                        );
-                        if (widget.cartItemId != null) {
-                          cart.updateItem(
-                            widget.cartItemId!,
-                            widget.item,
-                            _quantity,
-                          );
-                        } else {
-                          cart.addItem(widget.item);
-                          cart.updateItem(
-                            cart.items.keys.last,
-                            widget.item,
-                            _quantity,
-                          );
-                        }
-                        Navigator.of(context).pop();
-                      },
-                child: Text(
-                  '${widget.cartItemId != null ? 'Güncelle' : 'Sepete Ekle'} ${(widget.item.totalPrice * _quantity).toStringAsFixed(2)}€',
-                ),
-              ),
+              Spacer(),
             ],
+          ),
+          BottomActionButton(
+            label:
+                '${widget.cartItemId != null ? 'Güncelle' : 'Sepete Ekle'} ${(widget.item.totalPrice * _quantity).toStringAsFixed(2)}€',
+            icon: widget.cartItemId != null
+                ? Icons.edit
+                : Icons.add_shopping_cart,
+            onPressed: widget.cartItemId != null && !_hasChanged
+                ? null
+                : () {
+                    final cart = Provider.of<CartProvider>(
+                      context,
+                      listen: false,
+                    );
+                    if (widget.cartItemId != null) {
+                      cart.updateItem(
+                        widget.cartItemId!,
+                        widget.item,
+                        _quantity,
+                      );
+                    } else {
+                      cart.addItem(widget.item);
+                      cart.updateItem(
+                        cart.items.keys.last,
+                        widget.item,
+                        _quantity,
+                      );
+                    }
+                    Navigator.of(context).pop();
+                  },
           ),
         ],
       ),
