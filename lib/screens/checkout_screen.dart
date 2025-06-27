@@ -4,7 +4,6 @@ import '../providers/cart_provider.dart';
 import '../providers/orders_provider.dart';
 import '../models/enums.dart';
 import '../models/customer.dart';
-import '../widgets/bottom_action_button.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -199,9 +198,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       bottomNavigationBar: Consumer<CartProvider>(
         builder: (context, cart, child) {
           if (cart.items.isEmpty) return const SizedBox();
-          return BottomActionButton(
-            label: 'Siparişi Ver: ${cart.totalAmount.toStringAsFixed(2)}₺',
-            icon: Icons.check,
+          return ElevatedButton.icon(
+            label: Text(
+              'Siparişi Ver: ${cart.totalAmount.toStringAsFixed(2)}₺',
+            ),
+            icon: Icon(Icons.check),
             onPressed: _submitOrder,
           );
         },

@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 import '../data/mock_data.dart';
-import '../widgets/item_bottom_sheet.dart';
 import 'profile_screen.dart';
 import '../models/enums.dart';
 import 'cart_screen.dart';
 import '../widgets/item_list_tile.dart';
-import '../widgets/bottom_action_button.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -52,9 +50,11 @@ class HomeScreen extends StatelessWidget {
         bottomNavigationBar: Consumer<CartProvider>(
           builder: (context, cart, child) {
             if (cart.items.isEmpty) return const SizedBox();
-            return BottomActionButton(
-              label: 'Sepete Git: ${cart.totalAmount.toStringAsFixed(2)} ₺',
-              icon: Icons.shopping_cart,
+            return ElevatedButton.icon(
+              label: Text(
+                'Sepete Git: ${cart.totalAmount.toStringAsFixed(2)} ₺',
+              ),
+              icon: Icon(Icons.shopping_cart),
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => const CartScreen()),
@@ -75,31 +75,7 @@ class HomeScreen extends StatelessWidget {
             .toList();
         return ListView.builder(
           itemCount: items.length,
-          itemBuilder: (ctx, i) => ItemListTile(
-            item: items[i],
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                enableDrag: true,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                ),
-                builder: (ctx) => DraggableScrollableSheet(
-                  initialChildSize: 0.6,
-                  minChildSize: 0.4,
-                  maxChildSize: 0.9,
-                  expand: false,
-                  builder: (context, scrollController) => SingleChildScrollView(
-                    controller: scrollController,
-                    child: ItemBottomSheet(
-                      item: items[i].copyWith(quantity: 1),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
+          itemBuilder: (ctx, i) => ItemListTile(item: items[i]),
         );
       },
     );

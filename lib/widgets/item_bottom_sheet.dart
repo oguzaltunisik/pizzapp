@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../models/item.dart';
 import '../models/enums.dart';
 import '../providers/cart_provider.dart';
-import '../widgets/bottom_action_button.dart';
 import 'quantity_badge.dart';
 
 class ItemBottomSheet extends StatefulWidget {
@@ -127,6 +126,20 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        Align(
+          alignment: Alignment.topRight,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 16.0, top: 8.0),
+            child: IconButton(
+              icon: const Icon(Icons.close, size: 24),
+              onPressed: () => Navigator.of(context).pop(),
+              style: IconButton.styleFrom(
+                backgroundColor: Colors.grey.shade200,
+                shape: const CircleBorder(),
+              ),
+            ),
+          ),
+        ),
         const SizedBox(height: 12),
         Container(
           width: 72,
@@ -282,7 +295,6 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
         const SizedBox(height: 16),
         Row(
           children: [
-            Spacer(),
             QuantityBadge(
               quantity: _quantity,
               showButtons: true,
@@ -294,34 +306,43 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                 });
               },
             ),
-            Spacer(),
+            const SizedBox(width: 16),
+            Expanded(
+              child: ElevatedButton.icon(
+                label: Text(
+                  '${widget.cartItemId != null ? 'Güncelle' : 'Sepete Ekle'} ${(widget.item.totalPrice * _quantity).toStringAsFixed(2)}₺',
+                ),
+                icon: Icon(
+                  widget.cartItemId != null
+                      ? Icons.edit
+                      : Icons.add_shopping_cart,
+                ),
+                onPressed: widget.cartItemId != null && !_hasChanged
+                    ? null
+                    : () {
+                        final cart = Provider.of<CartProvider>(
+                          context,
+                          listen: false,
+                        );
+                        if (widget.cartItemId != null) {
+                          cart.updateItem(
+                            widget.cartItemId!,
+                            widget.item,
+                            _quantity,
+                          );
+                        } else {
+                          cart.addItem(widget.item);
+                          cart.updateItem(
+                            cart.items.keys.last,
+                            widget.item,
+                            _quantity,
+                          );
+                        }
+                        Navigator.of(context).pop();
+                      },
+              ),
+            ),
           ],
-        ),
-        BottomActionButton(
-          label:
-              '${widget.cartItemId != null ? 'Güncelle' : 'Sepete Ekle'} ${(widget.item.totalPrice * _quantity).toStringAsFixed(2)}₺',
-          icon: widget.cartItemId != null
-              ? Icons.edit
-              : Icons.add_shopping_cart,
-          onPressed: widget.cartItemId != null && !_hasChanged
-              ? null
-              : () {
-                  final cart = Provider.of<CartProvider>(
-                    context,
-                    listen: false,
-                  );
-                  if (widget.cartItemId != null) {
-                    cart.updateItem(widget.cartItemId!, widget.item, _quantity);
-                  } else {
-                    cart.addItem(widget.item);
-                    cart.updateItem(
-                      cart.items.keys.last,
-                      widget.item,
-                      _quantity,
-                    );
-                  }
-                  Navigator.of(context).pop();
-                },
         ),
       ],
     );

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
-import '../widgets/item_bottom_sheet.dart';
 import 'checkout_screen.dart';
 import '../widgets/item_list_tile.dart';
-import '../widgets/bottom_action_button.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -22,36 +20,7 @@ class CartScreen extends StatelessWidget {
             itemCount: cart.items.length,
             itemBuilder: (ctx, i) {
               final item = cart.items.values.elementAt(i);
-              return ItemListTile(
-                item: item,
-                onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    enableDrag: true,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(20),
-                      ),
-                    ),
-                    builder: (ctx) => DraggableScrollableSheet(
-                      initialChildSize: 0.6,
-                      minChildSize: 0.4,
-                      maxChildSize: 0.9,
-                      expand: false,
-                      builder: (context, scrollController) =>
-                          SingleChildScrollView(
-                            controller: scrollController,
-                            child: ItemBottomSheet(
-                              item: item,
-                              cartItemId: item.cartId,
-                              initialQuantity: item.quantity,
-                            ),
-                          ),
-                    ),
-                  );
-                },
-              );
+              return ItemListTile(item: item);
             },
           );
         },
@@ -59,9 +28,9 @@ class CartScreen extends StatelessWidget {
       bottomNavigationBar: Consumer<CartProvider>(
         builder: (context, cart, child) {
           if (cart.items.isEmpty) return const SizedBox();
-          return BottomActionButton(
-            label: 'Devam Et: ${cart.totalAmount.toStringAsFixed(2)} TL',
-            icon: Icons.payment,
+          return ElevatedButton.icon(
+            label: Text('Devam Et: ${cart.totalAmount.toStringAsFixed(2)} TL'),
+            icon: Icon(Icons.payment),
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => const CheckoutScreen()),

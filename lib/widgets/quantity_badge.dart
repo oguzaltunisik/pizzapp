@@ -21,9 +21,7 @@ class QuantityBadge extends StatelessWidget {
     const badgeColor = Color(0xFFFFE0B2); // Açık turuncu
     const textColor = Color(0xFFEF6C00); // Deep orange
     return Container(
-      padding: showButtons
-          ? const EdgeInsets.symmetric(horizontal: 2, vertical: 1)
-          : const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      height: 36,
       decoration: BoxDecoration(
         color: badgeColor,
         borderRadius: BorderRadius.circular(8),

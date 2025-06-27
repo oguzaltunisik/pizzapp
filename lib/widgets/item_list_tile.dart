@@ -3,12 +3,38 @@ import 'package:provider/provider.dart';
 import '../models/item.dart';
 import '../providers/cart_provider.dart';
 import 'quantity_badge.dart';
+import 'item_bottom_sheet.dart';
 
 class ItemListTile extends StatelessWidget {
   final Item item;
   final VoidCallback? onTap;
 
   const ItemListTile({super.key, required this.item, this.onTap});
+
+  void _showBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      enableDrag: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => DraggableScrollableSheet(
+        initialChildSize: 0.6,
+        minChildSize: 0.4,
+        maxChildSize: 0.9,
+        expand: false,
+        builder: (context, scrollController) => SingleChildScrollView(
+          controller: scrollController,
+          child: ItemBottomSheet(
+            item: item.copyWith(quantity: 1),
+            cartItemId: item.cartId,
+            initialQuantity: item.quantity > 0 ? item.quantity : 1,
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -176,7 +202,7 @@ class ItemListTile extends StatelessWidget {
           ],
         ),
       ),
-      onTap: onTap,
+      onTap: onTap ?? () => _showBottomSheet(context),
     );
   }
 }
