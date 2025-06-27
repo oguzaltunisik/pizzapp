@@ -60,7 +60,7 @@ class CartScreen extends StatelessWidget {
         builder: (context, cart, child) {
           if (cart.items.isEmpty) return const SizedBox();
           return BottomActionButton(
-            label: 'Devam Et: ${cart.totalAmount.toStringAsFixed(2)} €',
+            label: 'Devam Et: ${cart.totalAmount.toStringAsFixed(2)} TL',
             icon: Icons.payment,
             onPressed: () {
               Navigator.of(context).push(

@@ -35,7 +35,9 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
     _originalItem = widget.item.copyWith(
       quantity: _quantity,
       removedToppings: widget.item.removedToppings?.toList(),
-      extraToppings: widget.item.extraToppings?.toList(),
+      extraToppings: widget.item.extraToppings != null
+          ? Map.from(widget.item.extraToppings!)
+          : null,
     );
   }
 
@@ -45,10 +47,6 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
     }
     if ((widget.item.removedToppings ?? []).length !=
         (_originalItem.removedToppings ?? []).length) {
-      return true;
-    }
-    if ((widget.item.extraToppings ?? []).length !=
-        (_originalItem.extraToppings ?? []).length) {
       return true;
     }
     if (!(widget.item.removedToppings?.toSet().containsAll(
@@ -61,23 +59,33 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
             true)) {
       return true;
     }
-    if (!(widget.item.extraToppings?.toSet().containsAll(
-              _originalItem.extraToppings ?? [],
-            ) ??
-            true) ||
-        !(_originalItem.extraToppings?.toSet().containsAll(
-              widget.item.extraToppings ?? [],
-            ) ??
-            true)) {
+    final currentExtra = widget.item.extraToppings ?? {};
+    final originalExtra = _originalItem.extraToppings ?? {};
+
+    if (currentExtra.length != originalExtra.length) {
       return true;
     }
+
+    for (final entry in currentExtra.entries) {
+      if (originalExtra[entry.key] != entry.value) {
+        return true;
+      }
+    }
+
+    for (final entry in originalExtra.entries) {
+      if (currentExtra[entry.key] != entry.value) {
+        return true;
+      }
+    }
+
     return false;
   }
 
   void _toggleExtraTopping(Toppings t, bool? checked) {
     setState(() {
       if (checked == true) {
-        widget.item.extraToppings?.add(t);
+        widget.item.extraToppings?[t] =
+            (widget.item.extraToppings?[t] ?? 0) + 1;
       } else {
         widget.item.extraToppings?.remove(t);
       }
@@ -116,10 +124,10 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).colorScheme.primary;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        const SizedBox(height: 12),
         Container(
           width: 72,
           height: 72,
@@ -210,28 +218,56 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                     .where((t) => !(widget.item.toppings?.contains(t) ?? false))
                     .map(
                       (t) => ListTile(
-                        leading: Checkbox(
-                          value: widget.item.extraToppings?.contains(t) == true,
-                          onChanged: (checked) =>
-                              _toggleExtraTopping(t, checked),
-                        ),
-                        title: Text(t.label),
-                        trailing: Text(
-                          '+${Item.extraToppingPrice.toStringAsFixed(2)}€',
+                        title: Text(
+                          t.label,
                           style: TextStyle(
-                            fontSize: 13,
-                            color:
-                                widget.item.extraToppings?.contains(t) == true
-                                ? primaryColor
-                                : Theme.of(
-                                    context,
-                                  ).colorScheme.onSurface.withOpacity(0.5),
+                            color: widget.item.extraToppings?[t] != null
+                                ? Colors.green.shade700
+                                : null,
+                            fontWeight: widget.item.extraToppings?[t] != null
+                                ? FontWeight.bold
+                                : null,
                           ),
                         ),
-                        onTap: () => _toggleExtraTopping(
-                          t,
-                          !(widget.item.extraToppings?.contains(t) ?? false),
+                        subtitle: Text(
+                          '+${t.price.toStringAsFixed(1)}₺',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withOpacity(0.6),
+                          ),
                         ),
+                        trailing: (widget.item.extraToppings?[t] ?? 0) > 0
+                            ? QuantityBadge(
+                                quantity: widget.item.extraToppings![t]!,
+                                showButtons: true,
+                                onQuantityChanged: (val) {
+                                  setState(() {
+                                    if (val > 0) {
+                                      widget.item.extraToppings?[t] = val;
+                                    } else {
+                                      widget.item.extraToppings?.remove(t);
+                                    }
+                                  });
+                                },
+                              )
+                            : IconButton(
+                                icon: const Icon(
+                                  Icons.check_box_outline_blank,
+                                  size: 24,
+                                ),
+                                onPressed: () => _toggleExtraTopping(t, true),
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                              ),
+                        onTap: () {
+                          if ((widget.item.extraToppings?[t] ?? 0) > 0) {
+                            _toggleExtraTopping(t, false);
+                          } else {
+                            _toggleExtraTopping(t, true);
+                          }
+                        },
                       ),
                     )
                     .toList(),
@@ -263,7 +299,7 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
         ),
         BottomActionButton(
           label:
-              '${widget.cartItemId != null ? 'Güncelle' : 'Sepete Ekle'} ${(widget.item.totalPrice * _quantity).toStringAsFixed(2)}€',
+              '${widget.cartItemId != null ? 'Güncelle' : 'Sepete Ekle'} ${(widget.item.totalPrice * _quantity).toStringAsFixed(2)}₺',
           icon: widget.cartItemId != null
               ? Icons.edit
               : Icons.add_shopping_cart,

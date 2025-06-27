@@ -1,8 +1,6 @@
 import 'enums.dart';
 
 class Item {
-  static const double extraToppingPrice = 2.0;
-
   final String id;
   final String name;
   final String image;
@@ -13,7 +11,7 @@ class Item {
 
   // For cart
   List<Toppings>? removedToppings;
-  List<Toppings>? extraToppings;
+  Map<Toppings, int>? extraToppings;
   int quantity;
   String? cartId;
 
@@ -29,17 +27,24 @@ class Item {
     this.cartId,
   }) {
     removedToppings = removedToppings ?? [];
-    extraToppings = extraToppings ?? [];
+    extraToppings = extraToppings ?? {};
   }
 
-  double get totalPrice =>
-      (price + (extraToppings?.length ?? 0) * extraToppingPrice);
+  double get totalPrice {
+    double extraTotal = 0.0;
+    if (extraToppings != null) {
+      for (final entry in extraToppings!.entries) {
+        extraTotal += entry.key.price * entry.value;
+      }
+    }
+    return price + extraTotal;
+  }
 
   Item copyWith({
     int? quantity,
     String? cartId,
     List<Toppings>? removedToppings,
-    List<Toppings>? extraToppings,
+    Map<Toppings, int>? extraToppings,
     Category? category,
   }) {
     return Item(
@@ -54,7 +59,7 @@ class Item {
         cartId: cartId ?? this.cartId,
       )
       ..removedToppings = removedToppings ?? this.removedToppings?.toList()
-      ..extraToppings = extraToppings ?? this.extraToppings?.toList();
+      ..extraToppings = extraToppings ?? Map.from(this.extraToppings ?? {});
   }
 
   Map<String, dynamic> toJson() {
@@ -67,7 +72,9 @@ class Item {
       'category': category.name,
       'toppings': toppings?.map((t) => t.name).toList(),
       'removedToppings': removedToppings?.map((t) => t.name).toList(),
-      'extraToppings': extraToppings?.map((t) => t.name).toList(),
+      'extraToppings': extraToppings?.map(
+        (key, value) => MapEntry(key.name, value),
+      ),
       'quantity': quantity,
       'cartId': cartId,
     };
@@ -93,9 +100,12 @@ class Item {
               .toList() ??
           []
       ..extraToppings =
-          (json['extraToppings'] as List?)
-              ?.map((e) => Toppings.values.firstWhere((t) => t.name == e))
-              .toList() ??
-          [];
+          (json['extraToppings'] as Map<String, dynamic>?)?.map(
+            (key, value) => MapEntry(
+              Toppings.values.firstWhere((t) => t.name == key),
+              value as int,
+            ),
+          ) ??
+          {};
   }
 }

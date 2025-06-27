@@ -200,7 +200,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         builder: (context, cart, child) {
           if (cart.items.isEmpty) return const SizedBox();
           return BottomActionButton(
-            label: 'Siparişi Ver: ${cart.totalAmount.toStringAsFixed(2)} ₺',
+            label: 'Siparişi Ver: ${cart.totalAmount.toStringAsFixed(2)}₺',
             icon: Icons.check,
             onPressed: _submitOrder,
           );

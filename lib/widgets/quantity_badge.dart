@@ -22,11 +22,11 @@ class QuantityBadge extends StatelessWidget {
     const textColor = Color(0xFFEF6C00); // Deep orange
     return Container(
       padding: showButtons
-          ? const EdgeInsets.symmetric(horizontal: 4, vertical: 2)
-          : const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+          ? const EdgeInsets.symmetric(horizontal: 2, vertical: 1)
+          : const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: badgeColor,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -37,7 +37,7 @@ class QuantityBadge extends StatelessWidget {
                 cartId != null && quantity == 1
                     ? Icons.delete
                     : Icons.remove_circle_outline,
-                size: 20,
+                size: 16,
               ),
               color: textColor,
               padding: EdgeInsets.zero,
@@ -51,12 +51,12 @@ class QuantityBadge extends StatelessWidget {
             ),
           Padding(
             padding: showButtons
-                ? const EdgeInsets.symmetric(horizontal: 8)
+                ? const EdgeInsets.symmetric(horizontal: 4)
                 : EdgeInsets.zero,
             child: Text(
               '$quantity',
               style: const TextStyle(
-                fontSize: 15,
+                fontSize: 13,
                 fontWeight: FontWeight.bold,
                 color: textColor,
                 letterSpacing: 0.2,
@@ -65,7 +65,7 @@ class QuantityBadge extends StatelessWidget {
           ),
           if (showButtons)
             IconButton(
-              icon: const Icon(Icons.add_circle_outline, size: 20),
+              icon: const Icon(Icons.add_circle_outline, size: 16),
               color: textColor,
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
